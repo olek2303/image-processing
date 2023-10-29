@@ -1,22 +1,37 @@
-#include <iostream>
-#include <opencv2/opencv.hpp>
+#define _CRT_SECURE_NO_WARNINGS
+
+#include "blur.hpp"
+#include "image.hpp"
+
+
 
 using namespace std;
+using namespace std::chrono;
 
-int main() {
-    cv::Mat inputImage = cv::imread("input.jpeg");
+int main(int argc, char* argv[])
+{
 
-    if (inputImage.empty()) {
-        std::cerr << "Could not open or find the image." << std::endl;
-        return -1;
-    }
+    // Image loading
+    string fileName = "test.jpg"; //dorobiæ wczytywanie
+   
+    Image im(fileName);
+    float blurSigma = 5; // moc rozmycia
 
-    cv::Mat blurredImage;
-    cv::GaussianBlur(inputImage, blurredImage, cv::Size(5, 5), 0); // Gaussian Blur
+    auto start = high_resolution_clock::now();
 
-    cv::imshow("Original Image", inputImage);
-    cv::imshow("Blurred Image", blurredImage);
+    blur_image(im, blurSigma);
 
-    cv::waitKey(0);
+    auto stop = high_resolution_clock::now();
+
+
+    auto duration = duration_cast<microseconds>(stop - start);
+
+    cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
+
+    im.save_image("blurImage.jpg");
+    
+   
+
+
     return 0;
 }
