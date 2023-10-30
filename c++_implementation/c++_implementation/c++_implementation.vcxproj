@@ -142,10 +142,12 @@
     <ClCompile Include="blur.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="merge.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="blur.hpp" />
     <ClInclude Include="image.hpp" />
+    <ClInclude Include="merge.hpp" />
     <ClInclude Include="stb_image.h">
       <DeploymentContent>false</DeploymentContent>
     </ClInclude>
