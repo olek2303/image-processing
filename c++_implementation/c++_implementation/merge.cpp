@@ -39,7 +39,7 @@ Image mergeImages(Image im1, Image im2, double alpha) {
                 int srcIndex = (y * im2.width + x) * 3;
                 int destIndex = (y * mergedW + x) * 3;
                 for (int c = 0; c < 3; c++) {
-                    merged->imageData[destIndex + c] = (im1.imageData[destIndex + c] + im2.imageData[srcIndex + c]) / 2;
+                    merged->imageData[destIndex + c] = ((im1.imageData[destIndex + c] * (1.0 - alpha)) + (im2.imageData[srcIndex + c] * alpha));
                 }
             }
         }
@@ -61,7 +61,7 @@ Image mergeImages(Image im1, Image im2, double alpha) {
                 int srcIndex = (y * im1.width + x) * 3;
                 int destIndex = (y * mergedW + x) * 3;
                 for (int c = 0; c < 3; c++) {
-                    merged->imageData[destIndex + c] = (im2.imageData[destIndex + c] + im1.imageData[srcIndex + c]) / 2;
+                    merged->imageData[destIndex + c] = ((im2.imageData[destIndex + c] * (1.0 - alpha)) + (im1.imageData[srcIndex + c] * alpha));
                 }
             }
         }

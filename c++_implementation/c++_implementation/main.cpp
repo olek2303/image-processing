@@ -34,9 +34,9 @@ int main(int argc, char* argv[])
 		im.save_image("blurImage.jpg");
 	}
 	else if (i == 2) {
-		Image im1("test.jpg");
-		Image im2("test1.jpg");
-		double alpha = 0.65;
+		Image im1("test2.jpg");
+		Image im2("test.jpg");
+		double alpha = 0.4;
 
 		auto start1 = high_resolution_clock::now();
 		Image merged = mergeImages(im1, im2, alpha);
