@@ -16,6 +16,7 @@ public:
 	string fileName;
 	unsigned char* imageData;
 	Image(string fileName);
+	Image(int _width, int _height, int _channels);
 	void save_image(string fileName);
 };
 

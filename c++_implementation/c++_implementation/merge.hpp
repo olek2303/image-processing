@@ -5,6 +5,8 @@
 #include <iostream>
 #include "image.hpp"
 
+
+bool validateChannels(Image im1, Image im2);
 Image mergeImages(Image im1, Image im2, double alpha); // alpha - transparency value
 
 #endif // 

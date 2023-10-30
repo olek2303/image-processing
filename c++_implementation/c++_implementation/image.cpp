@@ -6,6 +6,14 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+Image::Image(int _width, int _height, int _channels) {
+    width = _width;
+    height = _height;
+    channels = _channels;
+    int size = width * height * 3;
+    imageData = new unsigned char[size]();
+}
+
 Image::Image(string fileName) {
     unsigned char* _loadedImage = stbi_load(fileName.c_str(), &width, &height, &channels, 0);
     if (!_loadedImage)
