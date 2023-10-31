@@ -33,13 +33,15 @@ Image::Image(string fileName) {
 void Image::save_image(string fileName) {
     string extension = "jpg"; //default extension is .jpg
 
-    size_t i = fileName.rfind('.', fileName.length());
-    if (i != string::npos) {
-        extension = fileName.substr(i + 1, fileName.length() - i);
+    size_t dotPosition = fileName.find_last_of('.');
+    if (dotPosition != string::npos) {
+        extension = fileName.substr(dotPosition + 1);
     }
 
     if (extension == "png")
         stbi_write_png(fileName.c_str(), width, height, channels, imageData, channels * width);
+    else if(extension == "jpg")
+        stbi_write_jpg(fileName.c_str(), width, height, channels, imageData, 100);
     else {
         cout << "Extension not supported. Image saved as a default .jpg file.";
         stbi_write_jpg(fileName.c_str(), width, height, channels, imageData, 100);
