@@ -10,23 +10,25 @@ Image::Image(int _width, int _height, int _channels) {
     width = _width;
     height = _height;
     channels = _channels;
-    int size = width * height * 3;
-    imageData = new unsigned char[size]();
+    imageData = new unsigned char[width * height * _channels]();
 }
 
-Image::Image(string fileName) {
-    unsigned char* _loadedImage = stbi_load(fileName.c_str(), &width, &height, &channels, 0);
-    if (!_loadedImage)
+Image::Image(string _fileName) {
+    unsigned char* _loadedImage = stbi_load(_fileName.c_str(), &width, &height, &channels, 0);
+    while (!_loadedImage)
     {
         cerr << "Error while loading the file. (Check the file name!)" << std::endl;
-        exit(2);
+        cout << "Enter the file name: ";
+        cin >> fileName;
+        _loadedImage = stbi_load(fileName.c_str(), &width, &height, &channels, 0);
     }
-    if (channels < 3)
+    if (channels != 3)
     {
         std::cout << "Input images must be RGB images." << std::endl;
         exit(1);
     }
-    cout << "Loaded image: " << fileName << endl << width << " x " << height << " (" << channels << ")" << endl;
+    cout << "Loaded image: " << fileName << endl << width << " x " << height << " (channels: " << channels << ")" << endl;
+    fileName = _fileName;
     imageData = _loadedImage;
 }
 
@@ -50,3 +52,5 @@ void Image::save_image(string fileName) {
 
     stbi_image_free(imageData);
 }
+
+

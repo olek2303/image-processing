@@ -1,16 +1,17 @@
-
 #include "blur.hpp"
+
+using namespace std;
 
 void boxes_for_gauss(int boxes[], float sigma, int n)
 {
     // ideal filter width
-    float wi = std::sqrt((12 * sigma * sigma / n) + 1);
-    int wl = std::floor(wi);
+    float wi = sqrt((12 * sigma * sigma / n) + 1);
+    int wl = floor(wi);
     if (wl % 2 == 0) wl--;
     int wu = wl + 2;
 
     float mi = (12 * sigma * sigma - n * wl * wl - 4 * n * wl - 3 * n) / (-4 * wl - 4);
-    int m = std::round(mi);
+    int m = round(mi);
 
     for (int i = 0; i < n; i++)
         boxes[i] = ((i < m ? wl : wu) - 1) / 2;
@@ -19,7 +20,6 @@ void boxes_for_gauss(int boxes[], float sigma, int n)
 void horizontal_blur(float* in, float* out, int w, int h, int r)
 {
     float iarr = 1.f / (r + r + 1);
-//#pragma omp parallel for
     for (int i = 0; i < h; i++)
     {
         int ti = i * w, li = ti, ri = ti + r;
@@ -44,7 +44,6 @@ void horizontal_blur(float* in, float* out, int w, int h, int r)
 void total_blur(float* in, float* out, int w, int h, int r)
 {
     float iarr = 1.f / (r + r + 1);
-//#pragma omp parallel for
     for (int i = 0; i < w; i++)
     {
         int ti = i, li = ti, ri = ti + r * w;
@@ -67,13 +66,13 @@ void total_blur(float* in, float* out, int w, int h, int r)
 
 void box_blur(float*& in, float*& out, int w, int h, int r)
 {
-    std::swap(in, out);
+    swap(in, out);
     horizontal_blur(out, in, w, h, r);
     total_blur(in, out, w, h, r);
 }
 
 void fast_gaussian_blur(float*& in, float*& out, int w, int h, float sigma)
-//in obraz wczytywany, out zapisywany, w width, h height, sigma promieñ rozmycia
+//in image chanell loading, out image chanell, w width, h height, sigma blur radius
 {
     int boxes[3];
     boxes_for_gauss(boxes, sigma, 3);
@@ -104,7 +103,6 @@ void blur_image(Image im, float sigma) {
         oldr[i] = im.imageData[im.channels * i + 2] / 255.f;
     }
 
-
     fast_gaussian_blur(oldb, newb, im.width, im.height, sigma);
     fast_gaussian_blur(oldg, newg, im.width, im.height, sigma);
     fast_gaussian_blur(oldr, newr, im.width, im.height, sigma);
@@ -122,5 +120,4 @@ void blur_image(Image im, float sigma) {
     delete[] oldr;
     delete[] oldb;
     delete[] oldg;
-
 }

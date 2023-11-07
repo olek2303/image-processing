@@ -1,18 +1,8 @@
 #include "merge.hpp"
 
 
-bool validateChannels(Image im1, Image im2) {
-    if (im1.channels != 3 || im2.channels != 3)
-        return 0;
-    return 1;
-}
-
 Image mergeImages(Image im1, Image im2, double alpha) {
-    if (!validateChannels(im1, im2)) {
-        cout << "Channels not correct..." << endl;
-        cout << "Printing only first image..." << endl;
-        return im1;
-    }
+   
 
     int mergedW = std::max(im1.width, im2.width);
     int mergedH = std::max(im1.height, im2.height);
