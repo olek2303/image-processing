@@ -20,4 +20,4 @@ public:
 	void save_image(string fileName);
 };
 
-#endif // 
+#endif //IMAGE_HPP

@@ -4,13 +4,21 @@
 #include "image.hpp"
 #include "merge.hpp"
 #include "delete.hpp"
+#include "timer.hpp"
 
 using namespace std;
-using namespace std::chrono;
+
+string ask_file_name() {
+    cout << "Enter the file name with extension (or full path if file is in the other directory): " << endl;
+    string fileName;
+    cin >> fileName;
+    return fileName;
+}
 
 int main(int argc, char* argv[])
 {
     int i = 0;
+    Timer timerT;
 
     while (i != 4)
     {
@@ -26,34 +34,47 @@ int main(int argc, char* argv[])
         if (i == 1)
         {
             // Image loading
-            string fileName = "test.jpg"; //dorobiæ wczytywanie
-            Image im(fileName);
-            float blurSigma = 5; // moc rozmycia
-            auto start = high_resolution_clock::now();
-            blur_image(im, blurSigma);
-            auto stop = high_resolution_clock::now();
+            Image im(ask_file_name());
+            cout << "Insert blur radius (from 0 to 10): ";
+            float blurSigma; // moc rozmycia
+            cin >> blurSigma;
+            while (blurSigma < 0 || blurSigma > 10) {
+                cout << "Wrong blur radius!";
+                cout << "Insert blur radius (from 0 to 10): ";
+                cin >> blurSigma;
+            }
 
-            auto duration = duration_cast<microseconds>(stop - start);
-            cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
-            im.save_image("blurImage.jpg");
+            timerT.start();
+            blur_image(im, blurSigma);
+            timerT.stop();
+            
+            string output = im.fileName + "_blur.jpg";
+            im.save_image(output);
         }
         else if (i == 2)
         {
-            Image im1("test2.jpg");
-            Image im2("test.jpg");
-            double alpha = 0.4;
+            Image im1(ask_file_name());
+            Image im2(ask_file_name());
+            
+            cout << "Enter alpha value for marging(from 0.0 to 1.0):  ";
+            double alpha;
+            cin >> alpha;
+            while (alpha < 0.0 || alpha > 1.0) {
+                cout << "Wrong alpha value!" << endl;
+                cout << "Enter alpha value for marging(from 0.0 to 1.0):  ";
+                cin >> alpha;
+            }
 
-            auto start1 = high_resolution_clock::now();
+
+            timerT.start();
             Image merged = mergeImages(im1, im2, alpha);
-            auto stop1 = high_resolution_clock::now();
+            timerT.stop();
 
-            auto duration1 = duration_cast<microseconds>(stop1 - start1);
-            cout << "Time taken by function: " << duration1.count() << " microseconds" << endl;
-            merged.save_image("mergedImage.jpg");
+            merged.save_image(im1.fileName + im2.fileName + "_merged.jpg");
         }
         else if (i == 3)
         {
-            Image im3("test.jpg");
+            Image im3(ask_file_name());
             int x, y, width, height;
             cout << "Enter the x value - upper left corner of the area to be removed: ";
             cin >> x;
@@ -63,12 +84,11 @@ int main(int argc, char* argv[])
             cin >> width;
             cout << "Enter the height of the area which is going to be removed: ";
             cin >> height;
-            auto start2 = high_resolution_clock::now();
+            timerT.start();
             delete_area(im3, x, y, width, height);
-            im3.save_image("deleted_area_image.jpg");
-            auto stop2 = high_resolution_clock::now();
-            auto duration2 = duration_cast<microseconds>(stop2 - start2);
-            cout << "Time taken by function: " << duration2.count() << " microseconds" << endl;
+            timerT.stop();
+
+            im3.save_image(im3.fileName + "_delete.jpg");
         }
         else if (i == 4)
         {
@@ -78,6 +98,7 @@ int main(int argc, char* argv[])
             cout << "You have chosen the wrong number. Please try again." << endl;
         continue;
     }
+
 
     return 0;
 }

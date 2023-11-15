@@ -1,4 +1,3 @@
-#pragma once
 // connected with the file below
 // delete.cpp
 

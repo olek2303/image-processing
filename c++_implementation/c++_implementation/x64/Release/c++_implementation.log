@@ -1,10 +1,7 @@
-﻿  blur.cpp
-C:\Users\Matebook X Pro\Desktop\Notatki\UKSW\projekt zespołowy\image-processing\c++_implementation\c++_implementation\blur.cpp(12,12): warning C4244: "inicjowanie": konwersja z "float" do "int", możliwa utrata danych
-C:\Users\Matebook X Pro\Desktop\Notatki\UKSW\projekt zespołowy\image-processing\c++_implementation\c++_implementation\blur.cpp(17,11): warning C4244: "inicjowanie": konwersja z "float" do "int", możliwa utrata danych
-  image.cpp
-  main.cpp
-image.obj : error LNK2001: nierozpoznany symbol zewnętrzny stbi_load
-image.obj : error LNK2001: nierozpoznany symbol zewnętrzny stbi_image_free
-image.obj : error LNK2001: nierozpoznany symbol zewnętrzny stbi_write_png
-image.obj : error LNK2001: nierozpoznany symbol zewnętrzny stbi_write_jpg
-C:\Users\Matebook X Pro\Desktop\Notatki\UKSW\projekt zespołowy\image-processing\c++_implementation\x64\Release\c++_implementation.exe : fatal error LNK1120: liczba nierozpoznanych elementów zewnętrznych: 4
+﻿  main.cpp
+  Trwa generowanie kodu
+  3 of 369 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    19 functions had inline decision re-evaluated but remain unchanged
+  Zakończono generowanie kodu
+  c++_implementation.vcxproj -> C:\Users\Matebook X Pro\Desktop\Notatki\UKSW\projekt zespołowy\image-processing\c++_implementation\x64\Release\c++_implementation.exe
