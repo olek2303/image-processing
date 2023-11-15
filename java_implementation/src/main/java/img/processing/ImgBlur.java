@@ -85,11 +85,11 @@ public class ImgBlur {
     }
 
     private static void boxBlur(byte[] in, byte[] out, int w, int h, int r) {
-        // swap in and out
-        byte[] temp = in;
-        in = out;
-        out = temp;
-        temp = null;
+        // // swap in and out
+        // byte[] temp = in;
+        // in = out;
+        // out = temp;
+        // temp = null;
 
         horizontalBlur(in, out, w, h, r);
         totalBlur(in, out, w, h, r);
@@ -123,28 +123,33 @@ public class ImgBlur {
 
         for (int i = 0; i < pixels.length; i += 3) {
             int index = i / 3;
-            oldb[index] = (byte) ((pixels[i] & 0xFF) / 255.0f);
-            oldg[index] = (byte) ((pixels[i + 1] & 0xFF) / 255.0f);
-            oldr[index] = (byte) ((pixels[i + 2] & 0xFF) / 255.0f);
+            oldb[index] = pixels[i];
+            oldg[index] = pixels[i + 1];
+            oldr[index] = pixels[i + 2];
         }
+        
+        newb = oldb;
+        newg = oldg;
+        newr = oldr;
+        fastGuassianBlur(oldb, newb, width, height, sigma);
+        fastGuassianBlur(oldg, newg, width, height, sigma);
+        fastGuassianBlur(oldr, newr, width, height, sigma);
+        
         int flag = 0;
         for (int j = 0; j < oldb.length; j++) {
-            if (oldb[j] != 0)
+            if (newb[j] != 0)
                 flag = 1;
 
         }
         if (flag == 1)
             System.err.println("Git");
 
-        fastGuassianBlur(oldb, newb, width, height, sigma);
-        fastGuassianBlur(oldg, newg, width, height, sigma);
-        fastGuassianBlur(oldr, newr, width, height, sigma);
-
-        for (int i = 0; i < pixels.length; i += 3) {
-            pixels[i] = newb[i / 3];
-            pixels[i + 1] = newg[i / 3];
-            pixels[i + 2] = newr[i / 3];
-        }
+            for (int i = 0; i < pixels.length; i += 3) {
+                int index = i / 3;
+                pixels[i] = newb[index];
+                pixels[i + 1] = newg[index];
+                pixels[i + 2] = newr[index];
+            }
 
         DataBufferByte dataBuffer = (DataBufferByte) im.getRaster().getDataBuffer();
 

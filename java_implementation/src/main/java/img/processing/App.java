@@ -11,12 +11,14 @@ public class App {
         // Load image
         BufferedImage loadedImage = ImgLoad.loadImage(inputFilePath);
 
-        BufferedImage blured = ImgBlur.blurImage(loadedImage, 5);
+        BufferedImage blured = ImgBlur.blurImage(loadedImage, 3);
 
         if (loadedImage != null) {
             // Save image
             ImgLoad.saveImage(blured, outputFilePath, "jpg");
         }
+
+        
 
     }
 
