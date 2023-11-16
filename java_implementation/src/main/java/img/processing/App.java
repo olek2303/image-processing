@@ -11,7 +11,7 @@ public class App {
         // Load image
         BufferedImage loadedImage = ImgLoad.loadImage(inputFilePath);
 
-        BufferedImage blured = ImgBlur.blurImage(loadedImage, 3);
+        BufferedImage blured = ImgBlur.blurImage(loadedImage, 5);
 
         if (loadedImage != null) {
             // Save image

@@ -1,10 +1,6 @@
 package img.processing;
 
 import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import java.awt.image.DataBufferInt;
-import java.awt.image.Raster;
-import java.awt.image.DataBufferByte;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.floor;
 import static java.lang.Math.round;
@@ -12,7 +8,6 @@ import static java.lang.Math.round;
 public class ImgBlur {
     private static void boxesForGauss(int boxes[], double sigma, int n) {
         // ideal filter width
-
         double wi = sqrt((12 * sigma * sigma / n) + 1);
 
         int wl = (int) floor(wi);
@@ -27,79 +22,68 @@ public class ImgBlur {
             boxes[i] = ((i < m ? wl : wu) - 1) / 2;
     }
 
-    private static void horizontalBlur(byte[] in, byte[] out, int w, int h, int r) {
+    private static void horizontalBlur(int[] in, int[] out, int w, int h, int r) {
         float iarr = 1.f / (r + r + 1);
-        for (int i = 0; i < h; i++) {
-            int ti = i * w, li = ti, ri = ti + r;
-            float fv = in[ti];
-            float lv = in[ti + w - 1];
-            float val = (r + 1) * fv;
 
+        for (int i = 0; i < h; i++) {
+            int ti = i * w, li = ti, ri = ti + r, fv = in[ti], lv = in[ti + w - 1], val = (r + 1) * fv;
             for (int j = 0; j < r; j++)
                 val += in[ti + j];
             for (int j = 0; j <= r; j++) {
                 val += in[ri++] - fv;
-                out[ti++] = (byte) (val * iarr);
+                out[ti++] = round(val * iarr);
             }
             for (int j = r + 1; j < w - r; j++) {
                 val += in[ri++] - in[li++];
-                out[ti++] = (byte) (val * iarr);
+                out[ti++] = round(val * iarr);
             }
             for (int j = w - r; j < w; j++) {
                 val += lv - in[li++];
-                out[ti++] = (byte) (val * iarr);
+                out[ti++] = round(val * iarr);
             }
         }
     }
 
-    private static void totalBlur(byte[] in, byte[] out, int w, int h, int r) {
+    private static void totalBlur(int[] in, int[] out, int w, int h, int r) {
         float iarr = 1.f / (r + r + 1);
-        for (int i = 0; i < w; i++) {
-            int ti = i, li = ti, ri = ti + r * w;
-            byte fv = in[ti];
-            byte lv = in[ti + w * (h - 1)];
-            float val = (r + 1) * fv;
-            for (int j = 0; j < r; j++)
-                val += in[ti + j * w];
 
+        for (int i = 0; i < w; i++) {
+            int ti = i, li = ti, ri = ti + r * w, fv = in[ti], lv = in[ti + w * (h - 1)], val = (r + 1) * fv;
+            for (int j = 0; j < r; j++) {
+                val += in[ti + j * w];
+            }
             for (int j = 0; j <= r; j++) {
                 val += in[ri] - fv;
-                out[ti] = (byte) (val * iarr);
+                out[ti] = round(val * iarr);
                 ri += w;
                 ti += w;
             }
             for (int j = r + 1; j < h - r; j++) {
                 val += in[ri] - in[li];
-                out[ti] = (byte) (val * iarr);
+                out[ti] = round(val * iarr);
                 li += w;
                 ri += w;
                 ti += w;
             }
             for (int j = h - r; j < h; j++) {
                 val += lv - in[li];
-                out[ti] = (byte) (val * iarr);
+                out[ti] = round(val * iarr);
                 li += w;
                 ti += w;
             }
         }
     }
 
-    private static void boxBlur(byte[] in, byte[] out, int w, int h, int r) {
-        // // swap in and out
-        // byte[] temp = in;
-        // in = out;
-        // out = temp;
-        // temp = null;
-
+    private static void boxBlur(int[] in, int[] out, int w, int h, int r) {
         horizontalBlur(in, out, w, h, r);
-        totalBlur(in, out, w, h, r);
+        totalBlur(out, in, w, h, r);
     }
 
-    private static void fastGuassianBlur(byte[] in, byte[] out, int w, int h, double sigma) {
+    private static void fastGuassianBlur(int[] in, int[] out, int w, int h, double sigma) {
         int[] boxes = new int[3];
         boxesForGauss(boxes, sigma, 3);
         boxBlur(in, out, w, h, boxes[0]);
-        boxBlur(out, in, w, h, boxes[1]);
+        boxBlur(in, out, w, h, boxes[1]);
         boxBlur(in, out, w, h, boxes[2]);
 
     }
@@ -107,57 +91,40 @@ public class ImgBlur {
     public static BufferedImage blurImage(BufferedImage im, double sigma) {
         int width = im.getWidth();
         int height = im.getHeight();
-        // image data
 
-        byte[] pixels = ((DataBufferByte) im.getData().getDataBuffer()).getData();
+        int[] pixels = new int[width * height];
+        im.getRGB(0, 0, width, height, pixels, 0, width);
 
-        // input RGB channels
-        byte[] oldr = new byte[width * height];
-        byte[] oldg = new byte[width * height];
-        byte[] oldb = new byte[width * height];
+        int[] redPixels = new int[width * height];
+        int[] greenPixels = new int[width * height];
+        int[] bluePixels = new int[width * height];
+        int[] newRedPixels = new int[width * height];
+        int[] newGreenPixels = new int[width * height];
+        int[] newBluePixels = new int[width * height];
 
-        // output RGB channels
-        byte[] newr = new byte[width * height];
-        byte[] newg = new byte[width * height];
-        byte[] newb = new byte[width * height];
+        for (int i = 0; i < pixels.length; i++) {
+            int pixel = pixels[i];
 
-        for (int i = 0; i < pixels.length; i += 3) {
-            int index = i / 3;
-            oldb[index] = pixels[i];
-            oldg[index] = pixels[i + 1];
-            oldr[index] = pixels[i + 2];
+            int red = (pixel >> 16) & 0xff;
+            int green = (pixel >> 8) & 0xff;
+            int blue = pixel & 0xff;
+
+            redPixels[i] = red;
+            greenPixels[i] = green;
+            bluePixels[i] = blue;
         }
         
-        newb = oldb;
-        newg = oldg;
-        newr = oldr;
-        fastGuassianBlur(oldb, newb, width, height, sigma);
-        fastGuassianBlur(oldg, newg, width, height, sigma);
-        fastGuassianBlur(oldr, newr, width, height, sigma);
-        
-        int flag = 0;
-        for (int j = 0; j < oldb.length; j++) {
-            if (newb[j] != 0)
-                flag = 1;
+        fastGuassianBlur(bluePixels, newBluePixels, width, height, sigma);
+        fastGuassianBlur(redPixels, newRedPixels, width, height, sigma);
+        fastGuassianBlur(greenPixels, newGreenPixels, width, height, sigma);
 
-        }
-        if (flag == 1)
-            System.err.println("Git");
-
-            for (int i = 0; i < pixels.length; i += 3) {
-                int index = i / 3;
-                pixels[i] = newb[index];
-                pixels[i + 1] = newg[index];
-                pixels[i + 2] = newr[index];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int index = y * width + x;
+                int rgb = (newRedPixels[index] << 16) | (newGreenPixels[index] << 8) | newBluePixels[index];
+                im.setRGB(x, y, rgb);
             }
-
-        DataBufferByte dataBuffer = (DataBufferByte) im.getRaster().getDataBuffer();
-
-        // Skopiuj zmodyfikowane piksele do danych obrazu
-        System.arraycopy(pixels, 0, dataBuffer.getData(), 0, pixels.length);
-
-        // Przerysuj obraz (jeśli potrzebne)
-        im.setData(im.getRaster());
+        }
 
         return im;
     }
