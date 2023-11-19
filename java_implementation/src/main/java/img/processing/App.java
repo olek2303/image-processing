@@ -20,18 +20,29 @@ public class App {
             System.out.println("Choose an option from 1-4");
 
             i = scanner.nextInt();
+            Timer t = new Timer();
+
+            if (i == 4) {
+                System.out.println("Exiting the program...\n");
+                break;
+            }
+
+            // Loading image
+            System.out.println(
+                    "Enter the file name with extension (or full path if file is in the other directory)\n");
+
+            String fileName = scanner.next();
+            BufferedImage im = ImgLoad.loadImage(fileName);
+            while (im == null) {
+                System.out.println(
+                        "Error while opening a file. Enter the file name again:\n");
+                fileName = scanner.next();
+                im = ImgLoad.loadImage(fileName);
+            }
 
             switch (i) {
                 case 1:
-                    System.out.println(
-                            "Enter the file name with extension (or full path if file is in the other directory)\n");
-
-                    String fileName = scanner.next();
-
-                    BufferedImage im = ImgLoad.loadImage(fileName);
-
                     System.out.println("Insert blur radius (from 0 to 10): ");
-
                     double sigma = scanner.nextDouble();
                     while (sigma < 0 || sigma > 10) {
                         System.out.println("Wrong blur radius!\n");
@@ -39,27 +50,30 @@ public class App {
                         sigma = scanner.nextDouble();
                     }
 
+                    t.start();
                     BufferedImage blured = ImgBlur.blurImage(im, sigma);
-                    ImgLoad.saveImage(blured, "./images/blured.jpg", "jpg");
-                    break;
+                    t.stop();
 
+                    String outFileName = fileName + "_blured.jpg";
+                    ImgLoad.saveImage(blured, outFileName, "jpg");
+                    break;
+                case 2:
+
+                    String outFileName2 = fileName + "_merged.jpg";
+
+                    break;
+                case 3:
+                    String outFileName3 = fileName + "_deleted.jpg";
+
+                    break;
+                case 4:
+                    System.out.println("Exiting the program...\n");
+                    break;
                 default:
                     break;
             }
 
         }
-
-        // // Example usage
-        // String inputFilePath = "./images/test.jpg";
-        // String outputFilePath = "./images/blured.jpg";
-
-        // // Load image
-        // BufferedImage loadedImage = ImgLoad.loadImage(inputFilePath);
-
-        // if (loadedImage != null) {
-        // // Save image
-        // ImgLoad.saveImage(blured, outputFilePath, "jpg");
-        // }
 
         scanner.close();
     }

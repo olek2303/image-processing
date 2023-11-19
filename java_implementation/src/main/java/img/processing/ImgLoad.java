@@ -9,7 +9,9 @@ public class ImgLoad {
 
     public static BufferedImage loadImage(String filePath) {
         try {
-            return ImageIO.read(new File(filePath));
+            BufferedImage im = ImageIO.read(new File(filePath));
+            System.out.println("Loaded image: " + filePath + "\n" + im.getWidth() + " x " + im.getHeight() + "\n\n");
+            return im;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -24,5 +26,4 @@ public class ImgLoad {
         }
     }
 
-    
 }
