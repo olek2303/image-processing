@@ -24,12 +24,13 @@ public class Merge {
         int mergedW = Math.max(im1.getWidth(), im2.getWidth());
         int mergedH = Math.max(im1.getHeight(), im2.getHeight());
 
-        BufferedImage merged = new BufferedImage(mergedW, mergedH, 3);
+        BufferedImage merged;
 
         int size1 = im1.getWidth() * im1.getHeight() * 3;
         int size2 = im2.getWidth() * im2.getHeight() * 3;
 
         if (size1 > size2) {
+            merged = im1;
             // Copy first image to output image
             for (int y = 0; y < im1.getHeight(); y++) {
                 for (int x = 0; x < im1.getWidth(); x++) {
@@ -46,6 +47,7 @@ public class Merge {
                 }
             }
         } else {
+            merged = im2;
             for (int y = 0; y < im2.getHeight(); y++) {
                 for (int x = 0; x < im2.getWidth(); x++) {
                     int rgb = im2.getRGB(x, y);
