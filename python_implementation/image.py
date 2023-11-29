@@ -1,7 +1,7 @@
 from PIL import Image
 
 class ImageRead:
-    def __init__(self, filename):
+    def __init__(self, filename="Default"):
         self.filename = filename
         self.imagePath = "./" + filename
 
