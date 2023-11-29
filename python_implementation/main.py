@@ -1,5 +1,6 @@
 from image import ImageRead
 from blur import blur_image
+from merge import mergeImages
 import time
 
 
@@ -40,6 +41,14 @@ def main():
             blur_im.saveImage("blur")
             continue
         elif choice == '2':
+            inName2 = input("Enter first image with extension: ")
+            im1 = ImageRead(inName2)
+            im1.loadImage()
+            alpha = input("Enter alpha value: ")
+            tim.start()
+            merged = mergeImages(im, im1, alpha)
+            tim.stop()
+            merged.saveImage("merged")
             continue
         elif choice == '3':
             continue
