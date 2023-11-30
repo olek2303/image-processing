@@ -84,8 +84,20 @@ public class App {
                     ImgLoad.saveImage(merged, outFileName2, "jpg");
                     break;
                 case 3:
-                    String outFileName3 = fileName + "_deleted.jpg";
+                    System.out.println("Insert coordinates (x, y) of the area to delete: ");
+                    int x = scanner.nextInt();
+                    int y = scanner.nextInt();
+                    System.out.println("Insert width and height of the area: ");
+                    int width = scanner.nextInt();
+                    int height = scanner.nextInt();
 
+                    // Wywołanie metody deleteArea z klasy Delete
+                    Delete.deleteArea(im.getRGB(0, 0, im.getWidth(), im.getHeight(), null, 0, im.getWidth()),
+                            im.getWidth(), im.getHeight(), x, y, width, height, 3);
+
+                    // Zapisanie zmodyfikowanego obrazu
+                    String outFileName3 = fileName + "_deleted.jpg";
+                    ImgLoad.saveImage(im, outFileName3, "jpg");
                     break;
                 case 4:
                     System.out.println("Exiting the program...\n");

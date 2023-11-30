@@ -1,7 +1,8 @@
-package java_implementation.src.main.java.img.processing;
+package img.processing;
 
 public class Delete {
-    public static int[] deleteArea(int[] imageData, int width, int height, int x, int y, int areaWidth, int areaHeight, int channels) {
+    public static int[] deleteArea(int[] imageData, int width, int height, int x, int y, int areaWidth, int areaHeight,
+            int channels) {
         // Checking if area is possible to delete
         if (x < 0 || y < 0 || x + areaWidth > width || y + areaHeight > height) {
             System.err.println("The area extends beyond the image size.");
