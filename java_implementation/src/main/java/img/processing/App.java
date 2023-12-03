@@ -3,8 +3,6 @@ package img.processing;
 import java.awt.image.BufferedImage;
 import java.util.Scanner;
 
-import javax.swing.Timer;
-
 public class App {
 
     public static void main(String[] args) {
@@ -92,12 +90,12 @@ public class App {
                     int height = scanner.nextInt();
 
                     // Wywołanie metody deleteArea z klasy Delete
-                    Delete.deleteArea(im.getRGB(0, 0, im.getWidth(), im.getHeight(), null, 0, im.getWidth()),
+                    BufferedImage deleted = Delete.deleteArea(im,
                             im.getWidth(), im.getHeight(), x, y, width, height, 3);
 
                     // Zapisanie zmodyfikowanego obrazu
                     String outFileName3 = fileName + "_deleted.jpg";
-                    ImgLoad.saveImage(im, outFileName3, "jpg");
+                    ImgLoad.saveImage(deleted, outFileName3, "jpg");
                     break;
                 case 4:
                     System.out.println("Exiting the program...\n");

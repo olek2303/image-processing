@@ -21,8 +21,7 @@ public class Merge {
     }
 
     public static BufferedImage mergeImages(BufferedImage im1, BufferedImage im2, double alpha) {
-        int mergedW = Math.max(im1.getWidth(), im2.getWidth());
-        int mergedH = Math.max(im1.getHeight(), im2.getHeight());
+       
 
         BufferedImage merged;
 

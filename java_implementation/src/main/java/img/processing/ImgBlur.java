@@ -5,6 +5,8 @@ import static java.lang.Math.sqrt;
 import static java.lang.Math.floor;
 import static java.lang.Math.round;
 
+
+//code build with the help of ChatGPT, based on c++ code
 public class ImgBlur {
     private static void boxesForGauss(int boxes[], double sigma, int n) {
         // ideal filter width
