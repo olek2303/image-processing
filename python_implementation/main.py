@@ -36,9 +36,9 @@ def main():
         if choice == '1':
             sigma = input("Enter the radius of the blur: ")
             tim.start()
-            blur_im = blur_image(im, float(sigma))
+            im.img = blur_image(im.img, float(sigma))
             tim.stop()
-            blur_im.saveImage("blur")
+            im.saveImage("blur")
             continue
         elif choice == '2':
             inName2 = input("Enter first image with extension: ")

@@ -1,128 +1,103 @@
-from PIL import Image
-from math import sqrt, floor
-from image import ImageRead
-
+import math
 
 def boxes_for_gauss(sigma, n):
     # ideal filter width
-    wi = sqrt((12 * sigma ** 2 / n) + 1)
-    wl = floor(wi)
+    wi = math.sqrt((12 * sigma * sigma / n) + 1)
+
+    wl = int(math.floor(wi))
     if wl % 2 == 0:
         wl -= 1
     wu = wl + 2
 
-    mi = (12 * sigma ** 2 - n * wl ** 2 - 4 * n * wl - 3 * n) / (-4 * wl - 4)
-    m = round(mi)
+    mi = (12 * sigma * sigma - n * wl * wl - 4 * n * wl - 3 * n) / (-4 * wl - 4)
+    m = int(round(mi))
 
     boxes = [((wl if i < m else wu) - 1) // 2 for i in range(n)]
-
     return boxes
 
-
-def horizontal_blur(inData, outData, w, h, r):
+def horizontal_blur(in_pixels, out_pixels, w, h, r):
     iarr = 1.0 / (r + r + 1)
 
     for i in range(h):
         ti = i * w
         li = ti
         ri = ti + r
-        fv = inData[ti]
-        lv = inData[ti + w - 1]
+        fv = in_pixels[ti]
+        lv = in_pixels[ti + w - 1]
         val = (r + 1) * fv
         for j in range(r):
-            val += inData[ti + j]
-
-        for j in range(r):
-            val += inData[ri] - fv
-            outData[ti] = round(val * iarr)
+            val += in_pixels[ti + j]
+        for j in range(r + 1):
+            val += in_pixels[ri] - fv
+            out_pixels[ti] = round(val * iarr)
+            ri += 1
             ti += 1
-            ri += 1
-
         for j in range(r + 1, w - r):
-            val += inData[ri] - inData[li]
-            outData[ti] = round(val * iarr)
-            ri += 1
+            val += in_pixels[ri] - in_pixels[li]
+            out_pixels[ti] = round(val * iarr)
             li += 1
+            ri += 1
             ti += 1
         for j in range(w - r, w):
-            val += lv - inData[li]
-            outData[ti] = round(val * iarr)
+            val += lv - in_pixels[li]
+            out_pixels[ti] = round(val * iarr)
             li += 1
             ti += 1
 
-
-def total_blur(inData, outData, w, h, r):
+def total_blur(in_pixels, out_pixels, w, h, r):
     iarr = 1.0 / (r + r + 1)
 
     for i in range(w):
-        ti, li, ri = i, i, i + r * w
-        fv, lv = inData[ti], inData[ti + w * (h - 1)]
+        ti = i
+        li = ti
+        ri = ti + r * w
+        fv = in_pixels[ti]
+        lv = in_pixels[ti + w * (h - 1)]
         val = (r + 1) * fv
-
         for j in range(r):
-            val += inData[ti + j * w]
-
+            val += in_pixels[ti + j * w]
         for j in range(r + 1):
-            val += inData[ri] - fv
-            outData[ti] = round(val * iarr)
+            val += in_pixels[ri] - fv
+            out_pixels[ti] = round(val * iarr)
             ri += w
             ti += w
-
         for j in range(r + 1, h - r):
-            val += inData[ri] - inData[li]
-            outData[ti] = round(val * iarr)
+            val += in_pixels[ri] - in_pixels[li]
+            out_pixels[ti] = round(val * iarr)
             li += w
             ri += w
             ti += w
-
         for j in range(h - r, h):
-            val += lv - inData[li]
-            outData[ti] = round(val * iarr)
+            val += lv - in_pixels[li]
+            out_pixels[ti] = round(val * iarr)
             li += w
             ti += w
 
+def box_blur(in_pixels, out_pixels, w, h, r):
+    horizontal_blur(in_pixels, out_pixels, w, h, r)
+    total_blur(out_pixels, in_pixels, w, h, r)
 
-def box_blur(inData, outData, w, h, sigma):
-    inData, outData = outData, inData
-    horizontal_blur(outData, inData, w, h, sigma)
-    total_blur(outData, inData, w, h, sigma)
-
-
-def fast_guassian_blur(inData, outData, w, h, sigma):
+def fast_gaussian_blur(in_pixels, out_pixels, w, h, sigma):
     boxes = boxes_for_gauss(sigma, 3)
-    box_blur(inData, outData, w, h, boxes[0])
-    box_blur(outData, inData, w, h, boxes[1])
-    box_blur(inData, outData, w, h, boxes[2])
-
+    box_blur(in_pixels, out_pixels, w, h, boxes[0])
+    box_blur(in_pixels, out_pixels, w, h, boxes[1])
+    box_blur(in_pixels, out_pixels, w, h, boxes[2])
 
 def blur_image(im, sigma):
-    oldr, oldg, oldb = im.img.split()
+    width, height = im.size
 
-    newr = Image.new('L', (im.width, im.heigth))
-    newg = Image.new('L', (im.width, im.heigth))
-    newb = Image.new('L', (im.width, im.heigth))
+    pixels = list(im.getdata())
+    red_pixels = [pixel[0] for pixel in pixels]
+    green_pixels = [pixel[1] for pixel in pixels]
+    blue_pixels = [pixel[2] for pixel in pixels]
+    new_red_pixels = [0] * (width * height)
+    new_green_pixels = [0] * (width * height)
+    new_blue_pixels = [0] * (width * height)
 
-    listOR = list(oldr.getdata())
-    listOG = list(oldg.getdata())
-    listOB = list(oldb.getdata())
+    fast_gaussian_blur(blue_pixels, new_blue_pixels, width, height, sigma)
+    fast_gaussian_blur(red_pixels, new_red_pixels, width, height, sigma)
+    fast_gaussian_blur(green_pixels, new_green_pixels, width, height, sigma)
 
-    listNR = list(newr.getdata())
-    listNB = list(newb.getdata())
-    listNG = list(newg.getdata())
-
-
-    fast_guassian_blur(listOB, listNB, im.width, im.heigth, sigma)
-    fast_guassian_blur(listOG, listNG, im.width, im.heigth, sigma)
-    fast_guassian_blur(listOR, listNR, im.width, im.heigth, sigma)
-
-    newr.putdata(listNR)
-    newb.putdata(listNB)
-    newg.putdata(listNG)
-
-
-    new_image = ImageRead()
-    new_image.img = Image.merge('RGB', (newr, newg, newb))
-    new_image.filename = im.filename
-
-
-    return new_image
+    new_pixels = [(new_red_pixels[i], new_green_pixels[i], new_blue_pixels[i]) for i in range(len(new_red_pixels))]
+    im.putdata(new_pixels)
+    return im
