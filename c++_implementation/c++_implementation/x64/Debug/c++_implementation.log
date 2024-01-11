@@ -1,2 +1,11 @@
-﻿  image.cpp
-  c++_implementation.vcxproj -> C:\Users\Matebook X Pro\Desktop\Notatki\UKSW\projekt zespołowy\image-processing\c++_implementation\x64\Debug\c++_implementation.exe
+﻿  blur.cpp
+C:\Users\xiii5\Desktop\Notatki_stacja\UKSW\projekt zespolowy\image-processing\c++_implementation\c++_implementation\blur.cpp(9,12): warning C4244: "inicjowanie": konwersja z "float" do "int", możliwa utrata danych
+C:\Users\xiii5\Desktop\Notatki_stacja\UKSW\projekt zespolowy\image-processing\c++_implementation\c++_implementation\blur.cpp(14,11): warning C4244: "inicjowanie": konwersja z "float" do "int", możliwa utrata danych
+  delete.cpp
+  image.cpp
+  main.cpp
+  merge.cpp
+C:\Users\xiii5\Desktop\Notatki_stacja\UKSW\projekt zespolowy\image-processing\c++_implementation\c++_implementation\merge.cpp(32,104): warning C4244: "=": konwersja z "double" do "unsigned char", możliwa utrata danych
+C:\Users\xiii5\Desktop\Notatki_stacja\UKSW\projekt zespolowy\image-processing\c++_implementation\c++_implementation\merge.cpp(54,104): warning C4244: "=": konwersja z "double" do "unsigned char", możliwa utrata danych
+  Generowanie kodu...
+  c++_implementation.vcxproj -> C:\Users\xiii5\Desktop\Notatki_stacja\UKSW\projekt zespolowy\image-processing\c++_implementation\x64\Debug\c++_implementation.exe
