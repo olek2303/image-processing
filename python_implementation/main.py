@@ -1,6 +1,7 @@
 from image import ImageRead
 from blur import blur_image
 from merge import mergeImages
+from delete import delete_area
 import time
 
 
@@ -51,6 +52,14 @@ def main():
             merged.saveImage("merged")
             continue
         elif choice == '3':
+            x = input("Insert x coordinate (x, y) of the area to delete: ")
+            y = input("Insert y coordinate (x, y) of the area to delete: ")
+            area_width = input("Insert width of the area: ")
+            area_height = input("Insert height of the area: ")
+            tim.start()
+            deleted = delete_area(im, int(x), int(y), int(area_width), int(area_height))
+            tim.stop()
+            deleted.save(inputName + "_deleted" + '.jpg')
             continue
         elif choice == '4':
             print("Exiting program.")
