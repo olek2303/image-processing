@@ -1,3 +1,4 @@
+import os
 from image import ImageRead
 from blur import blur_image
 from merge import mergeImages
@@ -20,7 +21,9 @@ class Timer:
 def main():
     choice = 0
     tim = Timer()
-    while choice != 4:
+    im = None
+
+    while choice != '4':
         print("\nMenu:")
         print("1. Blur Image")
         print("2. Merge Image")
@@ -29,41 +32,91 @@ def main():
 
         choice = input("Enter your choice (1-4): ")
 
-        if 0 < int(choice) < 4:
-            inputName = input("Enter a file name with extension: ")
-            im = ImageRead(inputName)
-            im.loadImage()
+        if choice in ['1', '2', '3']:
+            while True:
+                filepath = input("Enter the full path of the file: ")
+                if os.path.exists(filepath):
+                    im = ImageRead(filepath)
+                    im.loadImage()
+                    break
+                else:
+                    print("File does not exist. Please enter a valid path.")
 
-        if choice == '1':
-            sigma = input("Enter the radius of the blur: ")
+        if choice == '1' and im is not None:
+            while True:
+                try:
+                    sigma = float(input("Enter the radius of the blur: "))
+                    if sigma > 0:
+                        break
+                    else:
+                        print("Please enter a number greater than 0.")
+                except ValueError:
+                    print("Invalid input. Please enter a valid number.")
+
             tim.start()
-            im.img = blur_image(im.img, float(sigma))
+            im.img = blur_image(im.img, sigma)
             tim.stop()
             im.saveImage("blur")
-            continue
-        elif choice == '2':
-            inName2 = input("Enter first image with extension: ")
+        elif choice == '2' and im is not None:
+            inName2 = input("Enter the full path of the second image: ")
             im1 = ImageRead(inName2)
             im1.loadImage()
             alpha = input("Enter alpha value: ")
             tim.start()
-            merged = mergeImages(im, im1, alpha)
+            merged = mergeImages(im.img, im1.img, float(alpha))
             tim.stop()
-            merged.saveImage("merged")
-            continue
-        elif choice == '3':
-            x = input("Insert x coordinate (x, y) of the area to delete: ")
-            y = input("Insert y coordinate (x, y) of the area to delete: ")
-            area_width = input("Insert width of the area: ")
-            area_height = input("Insert height of the area: ")
+
+            # Zamiast używać metody saveImage, użyj metody save() z PIL
+            merged_output_path = "merged_output.jpg"  # Możesz zmodyfikować nazwę pliku według potrzeb
+            merged.save(merged_output_path)
+            print(f"Image saved as {merged_output_path}")
+        elif choice == '3' and im is not None:
+            while True:
+                try:
+                    x = int(input("Insert x coordinate (x, y) of the area to delete: "))
+                    if x > 0:
+                        break
+                    else:
+                        print("X coordinate must be greater than 0.")
+                except ValueError:
+                    print("Invalid input. Please enter a valid integer for X coordinate.")
+
+            while True:
+                try:
+                    y = int(input("Insert y coordinate (x, y) of the area to delete: "))
+                    if y > 0:
+                        break
+                    else:
+                        print("Y coordinate must be greater than 0.")
+                except ValueError:
+                    print("Invalid input. Please enter a valid integer for Y coordinate.")
+
+            while True:
+                try:
+                    area_width = int(input("Insert width of the area: "))
+                    if area_width > 0:
+                        break
+                    else:
+                        print("Width must be greater than 0.")
+                except ValueError:
+                    print("Invalid input. Please enter a valid integer for width.")
+
+            while True:
+                try:
+                    area_height = int(input("Insert height of the area: "))
+                    if area_height > 0:
+                        break
+                    else:
+                        print("Height must be greater than 0.")
+                except ValueError:
+                    print("Invalid input. Please enter a valid integer for height.")
+
             tim.start()
-            deleted = delete_area(im, int(x), int(y), int(area_width), int(area_height))
+            im.img = delete_area(im.img, x, y, area_width, area_height)
             tim.stop()
-            deleted.save(inputName + "_deleted" + '.jpg')
-            continue
+            im.saveImage("deleted")
         elif choice == '4':
             print("Exiting program.")
-            break
         else:
             print("Invalid choice. Please enter a number between 1 and 4.")
 
