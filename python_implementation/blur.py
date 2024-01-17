@@ -1,6 +1,5 @@
 import math
 
-
 def boxes_for_gauss(sigma, n):
     # ideal filter width
     wi = math.sqrt((12 * sigma * sigma / n) + 1)
@@ -15,7 +14,6 @@ def boxes_for_gauss(sigma, n):
 
     boxes = [((wl if i < m else wu) - 1) // 2 for i in range(n)]
     return boxes
-
 
 def horizontal_blur(in_pixels, out_pixels, w, h, r):
     iarr = 1.0 / (r + r + 1)
@@ -46,7 +44,6 @@ def horizontal_blur(in_pixels, out_pixels, w, h, r):
             li += 1
             ti += 1
 
-
 def total_blur(in_pixels, out_pixels, w, h, r):
     iarr = 1.0 / (r + r + 1)
 
@@ -76,18 +73,15 @@ def total_blur(in_pixels, out_pixels, w, h, r):
             li += w
             ti += w
 
-
 def box_blur(in_pixels, out_pixels, w, h, r):
     horizontal_blur(in_pixels, out_pixels, w, h, r)
     total_blur(out_pixels, in_pixels, w, h, r)
-
 
 def fast_gaussian_blur(in_pixels, out_pixels, w, h, sigma):
     boxes = boxes_for_gauss(sigma, 3)
     box_blur(in_pixels, out_pixels, w, h, boxes[0])
     box_blur(in_pixels, out_pixels, w, h, boxes[1])
     box_blur(in_pixels, out_pixels, w, h, boxes[2])
-
 
 def blur_image(im, sigma):
     width, height = im.size
